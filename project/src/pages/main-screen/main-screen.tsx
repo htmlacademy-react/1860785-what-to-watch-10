@@ -1,4 +1,4 @@
-import FilmCard from '../../components/film-card/film-card';
+import FilmsList from '../../components/films-list/films-list';
 
 type MainScreenProps = {
   filmCardsCount: number;
@@ -6,14 +6,6 @@ type MainScreenProps = {
   filmGenre: string;
   filmYear: number;
 }
-
-const getFilmCards = (count: number) => {
-  const filmCards = [];
-  for (let i = 0; i < count; i++) {
-    filmCards.push(<FilmCard key={i.toString()} />);
-  }
-  return filmCards;
-};
 
 function MainScreen({filmCardsCount, filmTitle, filmGenre, filmYear}: MainScreenProps): JSX.Element {
   return (
@@ -116,9 +108,7 @@ function MainScreen({filmCardsCount, filmTitle, filmGenre, filmYear}: MainScreen
             </li>
           </ul>
 
-          <div className="catalog__films-list">
-            {getFilmCards(filmCardsCount)}
-          </div>
+          <FilmsList filmsCount={filmCardsCount}/>
 
           <div className="catalog__more">
             <button className="catalog__button" type="button">Show more</button>
