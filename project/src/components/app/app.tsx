@@ -1,5 +1,7 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import {AppRoute, AuthStatus} from '../../const';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
+import { AppRoute, AuthStatus } from '../../const';
+import { Film } from '../../types/film';
 import MainScreen from '../../pages/main-screen/main-screen';
 import SignInScreen from '../../pages/sign-in-screen/sign-in-screen';
 import MyListScreen from '../../pages/my-list-screen/my-list-screen';
@@ -10,13 +12,16 @@ import NotFoundScreen from '../../pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../../components/private-route/private-route';
 
 type AppProps = {
-  filmCardsCount: number;
-  filmTitle: string;
-  filmGenre: string;
-  filmYear: number;
-}
+  films: Film[];
+  promoFilm: Film;
+};
 
-function App({filmCardsCount, filmTitle, filmGenre, filmYear}: AppProps): JSX.Element {
+function App({films, promoFilm}: AppProps): JSX.Element {
+  const myListFilms = films.filter((film) => film.isFavorite);
+  const myListFilmsCount = myListFilms.length;
+
+  const [currentFilm, setCurrentFilm] = useState(films[0]);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -24,10 +29,10 @@ function App({filmCardsCount, filmTitle, filmGenre, filmYear}: AppProps): JSX.El
           path={AppRoute.Main}
           element={
             <MainScreen
-              filmCardsCount = {filmCardsCount}
-              filmTitle = {filmTitle}
-              filmGenre = {filmGenre}
-              filmYear = {filmYear}
+              films={films}
+              promoFilm={promoFilm}
+              myListFilmsCount={myListFilmsCount}
+              setCurrentFilm={setCurrentFilm}
             />
           }
         />
@@ -38,22 +43,45 @@ function App({filmCardsCount, filmTitle, filmGenre, filmYear}: AppProps): JSX.El
         <Route
           path={AppRoute.MyList}
           element={
-            <PrivateRoute authStatus = {AuthStatus.NoAuth}>
-              <MyListScreen />
+            <PrivateRoute authStatus={AuthStatus.Auth}>
+              <MyListScreen
+                myListFilms={myListFilms}
+                myListFilmsCount={myListFilmsCount}
+                promoFilm={promoFilm}
+                setCurrentFilm={setCurrentFilm}
+              />
             </PrivateRoute>
           }
         />
         <Route
           path={AppRoute.Film}
-          element={<FilmScreen />}
+          element={
+            <FilmScreen
+              currentFilm={currentFilm}
+              films={films}
+              myListFilmsCount={myListFilmsCount}
+              promoFilm={promoFilm}
+              setCurrentFilm={setCurrentFilm}
+            />
+          }
         />
         <Route
           path={AppRoute.AddReview}
-          element={<AddReviewScreen />}
+          element={
+            <AddReviewScreen
+              film={currentFilm}
+              promoFilm={promoFilm}
+              setCurrentFilm={setCurrentFilm}
+            />
+          }
         />
         <Route
           path={AppRoute.Player}
-          element={<PlayerScreen />}
+          element={
+            <PlayerScreen
+              currentFilm={currentFilm}
+            />
+          }
         />
         <Route
           path="*"
