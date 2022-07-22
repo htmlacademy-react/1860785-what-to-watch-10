@@ -1,7 +1,5 @@
-import { useState } from 'react';
-import { Film } from '../../types/film';
+import {Film} from '../../types/film';
 import FilmCard from '../film-card/film-card';
-
 
 type FilmsListProps = {
   films: Film[];
@@ -9,11 +7,6 @@ type FilmsListProps = {
 };
 
 function FilmsList({films, setCurrentFilm}: FilmsListProps): JSX.Element {
-  const [/* activeFilm */, setActiveFilm] = useState(0);
-
-  const mouseOverHandler = (filmId: number) => {
-    setActiveFilm(filmId);
-  };
 
   const filmCards = [];
   for (const film of films) {
@@ -21,7 +14,6 @@ function FilmsList({films, setCurrentFilm}: FilmsListProps): JSX.Element {
       <FilmCard
         key = {film.id}
         film = {film}
-        mouseOverHandler = {mouseOverHandler}
         setCurrentFilm = {setCurrentFilm}
       />
     );
